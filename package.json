@@ -1,0 +1,72 @@
+{
+  "name": "v-logger",
+  "version": "1.0.0",
+  "description": "A logging middleware",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "clean": "node tools/build clean",
+    "build": "npm run clean && tsc -p . && node tools/build move",
+    "test": "npm run build && nyc ava",
+    "release": "standard-version && git push --follow-tags origin master"
+  },
+  "engines": {
+    "node": ">=6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myaooo/v-logger.git"
+  },
+  "keywords": [
+    "logging",
+    "middelware"
+  ],
+  "author": "Yao Ming",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/myaooo/v-logger/issues"
+  },
+  "homepage": "https://github.com/myaooo/v-logger#readme",
+  "devDependencies": {
+    "@types/node": "^7.0.18",
+    "ava": "^0.19.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-tslint": "^8.0.0",
+    "gulp-typescript": "^3.1.6",
+    "koa": "^2.2.0",
+    "nyc": "^10.3.2",
+    "shelljs": "^0.7.7",
+    "supertest": "^3.0.0",
+    "tslint": "^5.2.0",
+    "typescript": "^2.3.2"
+  },
+  "peerDependencies": {
+    "koa": "2.2.0"
+  },
+  "ava": {
+    "files": [
+      "dist/**/*.spec.js"
+    ]
+  },
+  "nyc": {
+    "include": [
+      "dist/**/*.js"
+    ],
+    "exclude": [
+      "dist/**/*.spec.js"
+    ],
+    "extensions": [
+      ".ts"
+    ],
+    "sourceMap": true,
+    "reporter": [
+      "lcov",
+      "text"
+    ],
+    "cache": true,
+    "all": true,
+    "check-coverage": false
+  }
+}
