@@ -1,33 +1,23 @@
 import test from "ava";
+
 import { Logger, LogLevel } from "./index";
-// import * as Koa from "koa";
-// import * as request from "supertest";
-
-// function makeApp() {
-//     const app: Koa = new Koa();
-//     app.use(async (ctx, next) => {
-//         try {
-//             await next();
-//         } catch (err) {
-//             // will only respond with JSON
-//             ctx.status = err.statusCode || err.status || 500;
-//             ctx.response.status = ctx.status;
-//             ctx.body = {
-//                 message: err.message,
-//             };
-//         }
-//     });
-//     return app;
-// }
-
-// function
+import { BufferStream } from "./testUtils";
 
 test("test", async (t) => {
-    // const app = makeApp();
+    // t.plan(1);
     const logger = new Logger("TEST", LogLevel.INFO);
-    logger.outStream(process.stdout);
+
+    const stream = new BufferStream();
+
+    logger.outStream(stream);
     logger.format("[:name] :level: :msg");
-    logger.verbose("hi, this is verbose");
-    logger.debug("debug messsge.");
-    t.pass();
+    logger.verbose("verbose");
+    logger.debug("debug");
+    logger.info("info");
+    logger.warn("warn");
+    logger.error("error");
+    logger.critical("critical");
+    /* tslint:disable no-console */
+    return t.is(stream.buffer,
+                "[TEST] INFO: info\n[TEST] WARN: warn\n[TEST] ERROR: error\n[TEST] CRITICAL: critical\n");
 });

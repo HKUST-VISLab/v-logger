@@ -2,7 +2,7 @@
 
 import * as Koa from "koa";
 import LogLevel from "./log-level";
-import { compileFormat, FormatFn, Logger, LogRecord, RecordInterface } from "./logger";
+import { format, FormatFn, Logger, LogRecord, RecordInterface } from "./logger";
 import { readonlyProxy } from "./utils";
 // const logger = new Logger("KoaLogger");
 
@@ -17,13 +17,13 @@ const defaultFormats: {[name: string]: string} = {
     tiny: `:method :url :status :res[content-length] - :response-time ms`,
 };
 
-function getFormatter(format: FormatType) {
-    if (format instanceof Function) {
-        return format;
-    } else if (format in defaultFormats) {
-        return compileFormat(defaultFormats[format]);
+function getFormatter(formatter: FormatType) {
+    if (formatter instanceof Function) {
+        return formatter;
+    } else if (formatter in defaultFormats) {
+        return format(defaultFormats[formatter]);
     }
-    return compileFormat(format);
+    return format(formatter);
 }
 
 export interface LogOptions {
