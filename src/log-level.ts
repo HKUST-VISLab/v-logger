@@ -1,28 +1,31 @@
-export default class LogLevel {
-    public static readonly verbose = 0;
-    public static readonly debug = 10;
-    public static readonly info = 20;
-    public static readonly warn = 30;
-    public static readonly error = 40;
-    public static readonly critical = 50;
-    public static addLogLevel(levelName: string, value: number): void {
+export default class LogLevel extends Number {
+    public static readonly VERBOSE: LogLevel = 0;
+    public static readonly DEBUG: LogLevel = 10;
+    public static readonly INFO: LogLevel = 20;
+    public static readonly WARN: LogLevel = 30;
+    public static readonly ERROR: LogLevel = 40;
+    public static readonly CRITICAL: LogLevel = 50;
+    public static addLogLevel(levelName: string, value: LogLevel): void {
         if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, levelName)) {
             throw new Error(`LogLevel already has name ${levelName}!`);
         }
         LogLevel.name2value[levelName] = value;
     }
-    public static getLevelValue(levelName: string): number {
-        if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, levelName)) {
-            return this.name2value[levelName];
+    public static getLevelValue(level: string | LogLevel): LogLevel {
+        if (level instanceof LogLevel) {
+            return level;
         }
-        throw new Error(`No level named ${levelName}!`);
+        if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, level)) {
+            return this.name2value[level];
+        }
+        throw new Error(`No level named ${level}!`);
     }
-    private static name2value: {[levelName: string]: number} = {
-        VERBOSE: LogLevel.verbose,
-        DEBUG: LogLevel.debug,
-        INFO: LogLevel.info,
-        WARN: LogLevel.warn,
-        ERROR: LogLevel.error,
-        CRITICAL: LogLevel.critical,
+    private static name2value: {[levelName: string]: LogLevel} = {
+        VERBOSE: LogLevel.VERBOSE,
+        DEBUG: LogLevel.DEBUG,
+        INFO: LogLevel.INFO,
+        WARN: LogLevel.WARN,
+        ERROR: LogLevel.ERROR,
+        CRITICAL: LogLevel.CRITICAL,
     };
 }
