@@ -27,7 +27,7 @@ export class LogRecord implements RecordInterface {
 }
 
 export interface LoggerOptions {
-    logLevel?: LogLevel;
+    logLevel?: LogLevel | string;
     format?: FormatFn | string;
     stream?: NodeJS.WritableStream;
     dateFormat?: DateFormatFn | string;

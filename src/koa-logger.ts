@@ -11,10 +11,10 @@ export type FormatType = DefaultFormat | string | FormatFn;
 
 /* tslint:disable max-line-length */
 const defaultFormats: {[name: string]: string} = {
-    combined: `:remote-addr [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`,
+    // combined: `:remote-addr [:date] ":method :url HTTP/:http-version" :status :length ":referrer" ":user-agent"`,
     common: `:remote-addr [:date] ":method :url HTTP/:http-version" :status :length - :response-time ms`,
     short: `:remote-addr :method :url HTTP/:http-version :status :length - :response-time ms`,
-    tiny: `:method :url :status :res[content-length] - :response-time ms`,
+    tiny: `:method :url :status :length - :response-time ms`,
 };
 
 function getFormatter(formatter: FormatType) {
@@ -36,7 +36,12 @@ export interface KoaLoggerOptions extends LoggerOptions {
 export type KoaLogger = (name: string, options?: KoaLoggerOptions) => Koa.Middleware;
 
 /**
- * loggerCreator
+ * koaLogger
+ * Usage:
+ * ```
+ * const app = new Koa();
+ * app.use(koaLogger("MyLogger", { format: "common"}));
+ * ```
  */
 const koaLogger: any = (name = "KoaLogger", options: KoaLoggerOptions = {}) => {
     // parse options
