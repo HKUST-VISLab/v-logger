@@ -177,14 +177,14 @@ function padLeft(n: number | string, pad = "0", len = 2) {
 
 function compileDateFormat(formatter: string): DateFormatFn {
     const re = /\%([\w|\%])/g;
-    return (date: Date): string => {
+    const formatFn = (date: Date): string => {
         const replacer = (match, arg) => {
             switch (arg) {
                 case "%": return arg;  // A literal '%' character.
                 case "a": return abbrWeekDays[date.getDay()];  // Locale’s abbreviated weekday name.
                 case "A": return weekDays[date.getDay()];  // Locale’s full weekday name.
-                case "b": return abbrMonths[date.getDay()];  // Locale’s abbreviated month name.
-                case "B": return months[date.getDay()];  // Locale’s full month name.
+                case "b": return abbrMonths[date.getMonth()];  // Locale’s abbreviated month name.
+                case "B": return months[date.getMonth()];  // Locale’s full month name.
                 case "c": return date.toDateString();  // Locale’s appropriate date and time representation.
                 // Day of the month as a decimal number [01,31].
                 case "d": return padLeft(date.getDate());
@@ -213,11 +213,14 @@ function compileDateFormat(formatter: string): DateFormatFn {
                           return offset < 0 ? ("-" + s) : ("+" + s);
                 case "Z": return "";
                 default:
-                    throw Error(`currently do not support token ${arg}`);
+                    throw Error(`Currently do not support token "${arg}"!`);
             }
         };
         return formatter.replace(re, replacer);
     };
+    // check legality of the formatter
+    formatFn(new Date());
+    return formatFn;
 }
 
 export const logger = new Logger(__filename);

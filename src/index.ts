@@ -2,5 +2,5 @@
 
 import LogLevel from "./log-level";
 export { LogLevel };
-export { Logger, LogRecord, logger } from "./logger";
+export { format, FormatFn, Logger, LoggerOptions, LogRecord, RecordInterface } from "./logger";
 export * from "./koa-logger";
