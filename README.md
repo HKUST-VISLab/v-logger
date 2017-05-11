@@ -1,10 +1,16 @@
 # v-logger
 
-[![Build Status](https://travis-ci.org/myaooo/v-logger.svg?branch=master)](https://travis-ci.org/myaooo/v-logger.svg?branch=master)
-[![codecov](https://codecov.io/gh/myaooo/v-logger/branch/master/graph/badge.svg)](https://codecov.io/gh/myaooo/v-logger)
-[![Greenkeeper badge](https://badges.greenkeeper.io/HKUST-VISLab/koa-bodyparser-ts.svg)](https://greenkeeper.io/)
+[![Build Status](https:
+ravis-ci.org/myaooo/v-logger.svg?branch=master)](https:
+ravis-ci.org/myaooo/v-logger.svg?branch=master)
+[![codecov](https:
+odecov.io/gh/myaooo/v-logger/branch/master/graph/badge.svg)](https:
+odecov.io/gh/myaooo/v-logger)
+[![Greenkeeper badge](https:
+adges.greenkeeper.io/HKUST-VISLab/koa-bodyparser-ts.svg)](https:
+reenkeeper.io/)
 
-A logger middleware for koa written in Typescript
+A customizable logger module written in Typescript. Extension of the logger is available as a koa logger middleware.
 
 ## Basic Usage
 
@@ -57,6 +63,62 @@ You can customize your own LogLevel using:
 LogLevel.addLevel("MY-LEVEL", 25);
 logger.log("MY-LEVEL", "This is a log with custom log level.");
 ```
+
+## Options
+
+Available options for customizing a logger instance:
+
+* logLevel: the threshold LogLevel of the logger, all logs with lower level than this one would be emitted.
+    Default to `"INFO"`.
+
+* format: a format template for logging, all tokens should start with a `:`.
+    
+    Available tokens for the basic logger are: `date` (the created date of a log record), 
+    `name` (the name of the logger), `level` (the level of a log record), `msg` (the message or content of the log).
+
+* stream: a `WritableStream` to write the log to. Default to `process.stdout`.
+
+* dateFormat: a format template for date. Pre-set formats are `"iso"` and `"utc"`. 
+    To customize your own date format, please reference the following available tokens.
+
+`%%`: A literal `%` character.
+
+`%a`: Locale’s abbreviated weekday name.
+
+`%A`: Locale’s full weekday name.
+
+`%b`: Locale’s abbreviated month name.
+
+`%B`: Locale’s full month name.
+
+`%c`: Locale’s appropriate date and time representation.
+
+`%d`: Day of the month as a decimal number [01,31].
+
+`%H`: Hour (24-hour clock) as a decimal number [00,23].
+
+`%I`: Hour (12-hour clock) as a decimal number [01,12].
+
+`%m`: Month as a decimal number [01,12].
+
+`%M`: Minute as a decimal number [00,59].
+
+`%P`: Locale’s equivalent of either AM or PM.
+
+`%S`: Second as a decimal number [00,59].
+
+`%w`: Weekday as a decimal number [0(Sunday),6].
+
+`%x`: Locale’s appropriate date representation.
+
+`%X`: Locale’s appropriate time representation.
+
+`%y`: Year without century as a decimal number [00,99].
+
+`%Y`: Year with century as a decimal number.
+
+`%z`: Time zone offset indicating time difference from UTC/GMT of the form +HHMM or -HHMM,
+where H represents decimal hour digits and M represents decimal minute digits [-23:59, +23:59].
 
 ## Koa Logger Middleware
 

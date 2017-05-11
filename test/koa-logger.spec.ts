@@ -32,8 +32,8 @@ test("test koa logger error", async (t) => {
         ctx.res.statusCode = 400;
     });
     const req = request(app.listen());
-    const res = await req.get("/test").expect(400);
+    await req.get("/test").expect(400);
     /* tslint:disable no-console */
-    console.log(res);
+    // console.log(res);
     t.regex(stream.buffer, /GET \/test 400 11/);
 });

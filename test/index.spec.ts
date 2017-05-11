@@ -46,11 +46,11 @@ test("test date formatter", async (t) => {
     });
     const offset = new Date().getTimezoneOffset();
     let z = offset < 0 ? "-" : "+";
-    z += ("0" + Math.floor(offset / 60)).slice(-2);
+    z += ("0" + Math.abs(Math.floor(offset / 60))).slice(-2);
     z += ("0" + offset % 60).slice(-2);
     return t.is(stream.buffer,
                 "[Sat Saturday May May 06 07 05 PM 6 17 2017 19:40:00 %  " +
-                "|Sat May 06 2017|5/6/2017|7:40:00 PM|-0800]\n");
+                "|Sat May 06 2017|5/6/2017|7:40:00 PM|" + z + "]\n");
 });
 
 test("test date error format", async (t) => {
