@@ -1,14 +1,8 @@
 # v-logger
 
-[![Build Status](https:
-ravis-ci.org/myaooo/v-logger.svg?branch=master)](https:
-ravis-ci.org/myaooo/v-logger.svg?branch=master)
-[![codecov](https:
-odecov.io/gh/myaooo/v-logger/branch/master/graph/badge.svg)](https:
-odecov.io/gh/myaooo/v-logger)
-[![Greenkeeper badge](https:
-adges.greenkeeper.io/HKUST-VISLab/koa-bodyparser-ts.svg)](https:
-reenkeeper.io/)
+[![Build Status](https://travis-ci.org/myaooo/v-logger.svg?branch=master)](https://travis-ci.org/myaooo/v-logger.svg?branch=master)
+[![codecov](https://codecov.io/gh/myaooo/v-logger/branch/master/graph/badge.svg)](https://codecov.io/gh/myaooo/v-logger)
+[![Greenkeeper badge](https://badges.greenkeeper.io/HKUST-VISLab/koa-bodyparser-ts.svg)](https://greenkeeper.io/)
 
 A customizable logger module written in Typescript. Extension of the logger is available as a koa logger middleware.
 
