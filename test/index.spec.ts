@@ -31,7 +31,7 @@ test("test date", async (t) => {
     logger.outStream(stream);
     logger.format("[:date] :name > :level: :msg");
     logger.log("WARN", () => {
-        return new LogRecord(logger.name, LogLevel.WARN, "warn", new Date("10/21/2017"));
+        return new LogRecord(logger.name, LogLevel.WARN, "warn", new Date("10/21/2017 GMT"));
     });
     logger.dateFormat("%a, %d %b %Y %H:%M:%S");
     logger.log("ERROR", () => {
@@ -39,5 +39,5 @@ test("test date", async (t) => {
     });
     /* tslint:disable no-console */
     return t.is(stream.buffer,
-                "[2017-10-20T16:00:00.000Z] TEST > WARN: warn\n[Thu, 11 May 2017 11:00:00] TEST > ERROR: error\n");
+                "[2017-10-21T00:00:00.000Z] TEST > WARN: warn\n[Thu, 11 May 2017 11:00:00] TEST > ERROR: error\n");
 });

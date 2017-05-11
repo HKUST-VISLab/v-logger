@@ -1,4 +1,6 @@
-export default class LogLevel extends Number {
+// TODO simplify the design of LogLevel
+
+export default class LogLevel extends Number implements LogLevel {
     public static readonly VERBOSE = new LogLevel("VERBOSE", 0);
     public static readonly DEBUG = new LogLevel("DEBUG", 10);
     public static readonly INFO = new LogLevel("INFO", 20);
@@ -20,6 +22,8 @@ export default class LogLevel extends Number {
         }
         throw new Error(`No level named "${level}"!`);
     }
+    // maintain a private static dictionary of LogLevels,
+    // so that users can customize their own LogLevel with LogLevel.addLevel
     private static name2value: {[levelName: string]: LogLevel} = {
         VERBOSE: LogLevel.VERBOSE,
         DEBUG: LogLevel.DEBUG,
@@ -33,6 +37,7 @@ export default class LogLevel extends Number {
         super(value);
         this.name = name;
     }
+    // helper function for writing logs
     public toString(): string {
         return this.name;
     }
