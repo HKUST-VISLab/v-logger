@@ -8,15 +8,15 @@ A customizable logger module written in Typescript. Extension of the logger is a
 
 ## Basic Usage
 
-```javascript
-const { logger } = require("v-logger");
+```ts
+import { logger } from "v-logger";
 
 logger.info("Hello world");
 ```
 
 Customizing logging format and logging level:
 
-```javascript
+```ts
 logger.format("[:date] :name > :level: :msg");
 logger.level("DEBUG");
 logger.info("Another hi!");
@@ -24,10 +24,10 @@ logger.info("Another hi!");
 
 or create your own logger with options and write logs to file:
 
-```javascript
-const fs = require("fs");
+```ts
+import * as fs from "fs";
+import { Logger } from "v-logger";
 
-const { Logger } = require("v-logger");
 const myLogger = new Logger("MyLogger", { 
     format: "[:date] :name > :level: :msg",
     dateFormat: "iso",
@@ -53,7 +53,7 @@ CRITICAL: 50;
 
 You can customize your own LogLevel using:
 
-```typescript
+```ts
 LogLevel.addLevel("MY-LEVEL", 25);
 logger.log("MY-LEVEL", "This is a log with custom log level.");
 ```
@@ -118,7 +118,7 @@ where H represents decimal hour digits and M represents decimal minute digits [-
 
 Create a koa logger middleware by:
 
-```typescript
+```ts
 import { koaLogger } from "v-logger";
 import * as Koa from "koa";
 
@@ -129,7 +129,7 @@ app.use(koaLogger("MyLogger"));
 
 ### Customizing Logger Middleware
 
-```typescript
+```ts
 const options = {
     format: ':remote-addr [:date] ":method :url HTTP/:http-version" :status :length - :response-time ms',
     logLevel: "INFO",
