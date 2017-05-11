@@ -1,12 +1,12 @@
 // A Koa logger middleware that logs http request and response
 
-import * as Koa from "koa";
-import LogLevel from "./log-level";
-import { format, FormatFn, Logger, LoggerOptions, LogRecord, RecordInterface } from "./logger";
-import { readonlyProxy } from "./utils";
+import * as Koa from 'koa';
+import { format, FormatFn, Logger, LoggerOptions, LogRecord, RecordInterface } from './logger';
+import LogLevel from './logLevel';
+import { readonlyProxy } from './utils';
 // const logger = new Logger("KoaLogger");
 
-export type DefaultFormat = "combined" | "common" | "short" | "tiny";
+export type DefaultFormat = 'combined' | 'common' | 'short' | 'tiny';
 export type FormatType = DefaultFormat | string | FormatFn;
 
 /* tslint:disable max-line-length */
@@ -43,7 +43,7 @@ export type KoaLogger = (name: string, options?: KoaLoggerOptions) => Koa.Middle
  * app.use(koaLogger("MyLogger", { format: "common"}));
  * ```
  */
-const koaLogger: any = (name = "KoaLogger", options: KoaLoggerOptions = {}) => {
+const koaLogger: any = (name = 'KoaLogger', options: KoaLoggerOptions = {}) => {
     // parse options
     const mapFn = options.mapFn !== undefined ? options.mapFn : (ctx: Koa.Context) => {
         if (ctx.res.statusCode < 400) {
@@ -54,7 +54,7 @@ const koaLogger: any = (name = "KoaLogger", options: KoaLoggerOptions = {}) => {
     };
     // const logLevel = options.logLevel !== undefined ? options.logLevel : LogLevel.INFO;
     // const stream = options.stream !== undefined ? options.stream : process.stdout;
-    options.format = getFormatter(options.format !== undefined ? options.format : "common");
+    options.format = getFormatter(options.format !== undefined ? options.format : 'common');
     // create logger
     const logger = new Logger(name, options);
     // logger.outStream(stream);
@@ -95,13 +95,13 @@ class KoaLogRecord extends LogRecord {
         super(name, level);
         this.startDate = new Date();
     }
-    get ["response-time"](): number {
+    get ['response-time'](): number {
         return Date.now() - this.startDate.getTime();
     }
-    get ["remote-addr"](): string {
+    get ['remote-addr'](): string {
         return (this.ctx.req.connection && this.ctx.req.connection.remoteAddress) || undefined;
     }
-    get ["http-version"](): string {
+    get ['http-version'](): string {
         return this.ctx.req.httpVersion;
     }
     // get res() {}
@@ -112,6 +112,6 @@ class KoaLogRecord extends LogRecord {
 
 function CreateKoaRecord(name: string, level: LogLevel, ctx: Koa.Context): ContextRecord<Koa.Context> {
     const koaRecord = new KoaLogRecord(name, level, ctx);
-    const proxy = new Proxy(koaRecord, readonlyProxy("ctx"));
+    const proxy = new Proxy(koaRecord, readonlyProxy('ctx'));
     return proxy as ContextRecord<Koa.Context>;
 }

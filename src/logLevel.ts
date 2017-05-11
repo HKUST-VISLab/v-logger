@@ -1,12 +1,12 @@
 // TODO simplify the design of LogLevel
 
 export default class LogLevel extends Number implements LogLevel {
-    public static readonly VERBOSE = new LogLevel("VERBOSE", 0);
-    public static readonly DEBUG = new LogLevel("DEBUG", 10);
-    public static readonly INFO = new LogLevel("INFO", 20);
-    public static readonly WARN = new LogLevel("WARN", 30);
-    public static readonly ERROR = new LogLevel("ERROR", 40);
-    public static readonly CRITICAL = new LogLevel("CRITICAL", 50);
+    public static readonly VERBOSE = new LogLevel('VERBOSE', 0);
+    public static readonly DEBUG = new LogLevel('DEBUG', 10);
+    public static readonly INFO = new LogLevel('INFO', 20);
+    public static readonly WARN = new LogLevel('WARN', 30);
+    public static readonly ERROR = new LogLevel('ERROR', 40);
+    public static readonly CRITICAL = new LogLevel('CRITICAL', 50);
     public static addLevel(levelName: string, value: number): void {
         if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, levelName)) {
             throw new Error(`LogLevel already has name "${levelName}"!`);
