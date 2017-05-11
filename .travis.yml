@@ -21,7 +21,7 @@ after_success:
 
 deploy:
   provider: npm
-  email: $ZHUTIAN_EMAIL
-  api_key: $ZHUTIAN_NPM_KEY
+  email: yaoming.thu@gmail.com
+  api_key: $NPM_API_KEY
   on:
     tags: true

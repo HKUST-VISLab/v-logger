@@ -5,3 +5,4 @@ dist/*.spec.*
 coverage
 .nyc_output
 .vscode
+gulpfile.js
