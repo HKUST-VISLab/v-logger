@@ -3,6 +3,11 @@ node_modules/
 *.tgz
 dist/*.spec.*
 coverage
+dist/test
 .nyc_output
 .vscode
-gulpfile.js
+.gitignore
+.npmignore
+.travis.yml
+tslint.json
+tsconfig.json
