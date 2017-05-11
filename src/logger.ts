@@ -110,7 +110,7 @@ export class Logger {
         // a work around for date format
         record = new Proxy(record, { get: (target, property) => {
             if (property === "date") {
-                return this.dateFormatFn(target.date);
+                return this.dateFormatFn(target[property]);
             }
             return target[property];
         }});
@@ -127,7 +127,7 @@ export function format(formatter: "default" | string) {
 }
 
 function compileFormat(formatter: string): FormatFn {
-    const fmt = formatter.replace(/"/g, '\\"');
+    const fmt = formatter.slice();
     const tokens: string[] = [];
     const args: string[] = [];
     function tokensInit(match: string, name: string, arg: string | undefined): string {
@@ -156,8 +156,8 @@ export function dateFormat(formatter: "utc" | "iso" | string | DateFormatFn): (d
         return formatter;
     }
     switch (formatter) {
-        case "utc": return Date.prototype.toUTCString;
-        case "iso": return Date.prototype.toISOString;
+        case "utc": return (date: Date) => date.toUTCString();
+        case "iso": return (date: Date) => date.toISOString();
         default: return compileDateFormat(formatter);
     }
 }
@@ -171,6 +171,10 @@ const abbrMonths = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+function padLeft(n: number | string, pad = "0", len = 2) {
+    return (pad + n).slice(-len);
+}
+
 function compileDateFormat(formatter: string): DateFormatFn {
     const re = /\%([\w|\%])/g;
     return (date: Date): string => {
@@ -182,27 +186,31 @@ function compileDateFormat(formatter: string): DateFormatFn {
                 case "b": return abbrMonths[date.getDay()];  // Locale’s abbreviated month name.
                 case "B": return months[date.getDay()];  // Locale’s full month name.
                 case "c": return date.toDateString();  // Locale’s appropriate date and time representation.
-                case "d": return String(date.getDate());  // Day of the month as a decimal number [01,31].
-                case "H": return String(date.getHours());  // Hour (24-hour clock) as a decimal number [00,23].
-                case "I": const i = date.getHours() % 12;  // Hour (12-hour clock) as a decimal number [01,12].
-                          return String(i === 0 ? 12 : i);
+                // Day of the month as a decimal number [01,31].
+                case "d": return padLeft(date.getDate());
+                // Hour (24-hour clock) as a decimal number [00,23].
+                case "H": return padLeft(date.getHours());
+                // Hour (12-hour clock) as a decimal number [01,12].
+                case "I": const i = date.getHours() % 12;
+                          return padLeft(i === 0 ? 12 : i);
                 // case "j": throw Error("currently do not support token \"j\"");
-                case "m": return String(date.getMonth() + 1);  // Month as a decimal number [01,12].
-                case "M": return String(date.getMinutes());  // Minute as a decimal number [00,59].
+                case "m": return padLeft(date.getMonth() + 1);  // Month as a decimal number [01,12].
+                case "M": return padLeft(date.getMinutes());  // Minute as a decimal number [00,59].
                 case "P": return date.getHours() < 12 ? "AM" : "PM";  // Locale’s equivalent of either AM or PM.
-                case "S": return String(date.getSeconds());  // Second as a decimal number [00,59].
+                case "S": return padLeft(date.getSeconds());  // Second as a decimal number [00,59].
                 // case "U": return Error("currently do not support token \"j\"");
-                case "w": return String(date.getDay());  // Weekday as a decimal number [0(Sunday),6].
+                case "w": return date.getDay().toString();  // Weekday as a decimal number [0(Sunday),6].
                 // case "W": return String(date.getDate());
                 case "x": return date.toLocaleDateString();  // Locale’s appropriate date representation.
                 case "X": return date.toLocaleTimeString();  // Locale’s appropriate time representation.
                 // Year without century as a decimal number [00,99].
-                case "y": return String(date.getFullYear()).slice(2, 4);
-                case "Y": return String(date.getFullYear());  // Year with century as a decimal number.
+                case "y": return date.getFullYear().toString().slice(2, 4);
+                case "Y": return date.getFullYear().toString();  // Year with century as a decimal number.
                 // Time zone offset indicating time difference from UTC/GMT of the form +HHMM or -HHMM,
                 // where H represents decimal hour digits and M represents decimal minute digits [-23:59, +23:59].
                 case "z": const offset = date.getTimezoneOffset();
-                          return String(Math.ceil(offset / 60)) + offset % 60;
+                          const s = padLeft(Math.abs(Math.ceil(offset / 60))) + padLeft(offset % 60);
+                          return offset < 0 ? ("-" + s) : ("+" + s);
                 case "Z": return "";
                 default:
                     throw Error(`currently do not support token ${arg}`);

@@ -2,7 +2,7 @@
 
 import * as Koa from "koa";
 import LogLevel from "./log-level";
-import { format, FormatFn, Logger, LogRecord, RecordInterface } from "./logger";
+import { format, FormatFn, Logger, LoggerOptions, LogRecord, RecordInterface } from "./logger";
 import { readonlyProxy } from "./utils";
 // const logger = new Logger("KoaLogger");
 
@@ -11,9 +11,9 @@ export type FormatType = DefaultFormat | string | FormatFn;
 
 /* tslint:disable max-line-length */
 const defaultFormats: {[name: string]: string} = {
-    combined: `:remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`,
-    common: `:remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]`,
-    short: `:remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms`,
+    combined: `:remote-addr [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`,
+    common: `:remote-addr [:date] ":method :url HTTP/:http-version" :status :length - :response-time ms`,
+    short: `:remote-addr :method :url HTTP/:http-version :status :length - :response-time ms`,
     tiny: `:method :url :status :res[content-length] - :response-time ms`,
 };
 
@@ -26,21 +26,20 @@ function getFormatter(formatter: FormatType) {
     return format(formatter);
 }
 
-export interface LogOptions {
-    logLevel?: LogLevel;  // the threshold level of logging
+export interface KoaLoggerOptions extends LoggerOptions {
     mapFn?: (ctx: Koa.Context) => LogLevel;
-    stream?: NodeJS.WritableStream;
 }
 
-export interface KoaLogger extends LogOptions {
-    (name: string, format?: FormatType, options?: LogOptions): Koa.Middleware;
-    name: string;
-}
+// export interface KoaLogger extends KoaLoggerOptions {
+//     (name: string, options?: KoaLoggerOptions): Koa.Middleware;
+// }
+export type KoaLogger = (name: string, options?: KoaLoggerOptions) => Koa.Middleware;
 
 /**
- * loggerCreatpr
+ * loggerCreator
  */
-const koaLogger: any = (name = "KoaLogger", format?: FormatType, options?: LogOptions) => {
+const koaLogger: any = (name = "KoaLogger", options: KoaLoggerOptions = {}) => {
+    // parse options
     const mapFn = options.mapFn !== undefined ? options.mapFn : (ctx: Koa.Context) => {
         if (ctx.res.statusCode < 400) {
             return LogLevel.INFO;
@@ -48,11 +47,13 @@ const koaLogger: any = (name = "KoaLogger", format?: FormatType, options?: LogOp
             return LogLevel.WARN;
         }
     };
-    const logLevel = options.logLevel !== undefined ? options.logLevel : LogLevel.INFO;
-    const stream = options.stream !== undefined ? options.stream : process.stdout;
-    const logger = new Logger(name, logLevel);
-    logger.outStream(stream);
-    logger.format(getFormatter(format));
+    // const logLevel = options.logLevel !== undefined ? options.logLevel : LogLevel.INFO;
+    // const stream = options.stream !== undefined ? options.stream : process.stdout;
+    options.format = getFormatter(options.format !== undefined ? options.format : "common");
+    // create logger
+    const logger = new Logger(name, options);
+    // logger.outStream(stream);
+    // logger.format(getFormatter(format));
     return async (ctx, next) => {
         await next();
         const recordLevel = mapFn(ctx);
@@ -62,7 +63,8 @@ const koaLogger: any = (name = "KoaLogger", format?: FormatType, options?: LogOp
     };
 };
 
-export { koaLogger  as KoaLogger };
+/* tslint:disable no-console */
+export default koaLogger as KoaLogger;
 
 // function delegate(proxied: string, name: string) {
 //     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -86,13 +88,16 @@ class KoaLogRecord extends LogRecord {
     public startDate: Date;
     constructor(name: string, level: LogLevel, public ctx: Koa.Context) {
         super(name, level);
-        this.startDate = this.date;
+        this.startDate = new Date();
     }
     get ["response-time"](): number {
         return Date.now() - this.startDate.getTime();
     }
     get ["remote-addr"](): string {
         return (this.ctx.req.connection && this.ctx.req.connection.remoteAddress) || undefined;
+    }
+    get ["http-version"](): string {
+        return this.ctx.req.httpVersion;
     }
     // get res() {}
     // @delegate("ctx", "res") get res() { return this.ctx.res; }

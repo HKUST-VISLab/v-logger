@@ -7,7 +7,7 @@ export default class LogLevel extends Number {
     public static readonly CRITICAL = new LogLevel("CRITICAL", 50);
     public static addLevel(levelName: string, value: number): void {
         if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, levelName)) {
-            throw new Error(`LogLevel already has name ${levelName}!`);
+            throw new Error(`LogLevel already has name "${levelName}"!`);
         }
         LogLevel.name2value[levelName] = new LogLevel(levelName, value);
     }
@@ -18,7 +18,7 @@ export default class LogLevel extends Number {
         if (Object.prototype.hasOwnProperty.call(LogLevel.name2value, level)) {
             return this.name2value[level];
         }
-        throw new Error(`No level named ${level}!`);
+        throw new Error(`No level named "${level}"!`);
     }
     private static name2value: {[levelName: string]: LogLevel} = {
         VERBOSE: LogLevel.VERBOSE,
