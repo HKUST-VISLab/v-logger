@@ -22,16 +22,40 @@ logger.level("DEBUG");
 logger.info("Another hi!");
 ```
 
-or create your own logger with options:
+or create your own logger with options and write logs to file:
 
 ```javascript
+const fs = require("fs");
+
 const { Logger } = require("v-logger");
 const myLogger = new Logger("MyLogger", { 
     format: "[:date] :name > :level: :msg",
     dateFormat: "iso",
     logLevel: "WARN",
+    stream: fs.createWriteStream("warnings.log");
 });
 myLogger.info("This message will not be logged.");
+myLogger.warn("This message will be logged.");
+```
+
+## Log Levels
+
+There are 6 pre-defined `LogLevel`s, each associate with an integer value:
+
+```typescript
+VERBOSE: 0;
+DEBUG: 10;
+INFO: 20;
+WARN: 30;
+ERROR: 40;
+CRITICAL: 50;
+```
+
+You can customize your own LogLevel using:
+
+```typescript
+LogLevel.addLevel("MY-LEVEL", 25);
+logger.log("MY-LEVEL", "This is a log with custom log level.");
 ```
 
 ## Koa Logger Middleware
